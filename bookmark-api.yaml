@@ -1,0 +1,206 @@
+---
+  openapi: "3.0.2"
+  info:
+    title: "Marki"
+    description: "Sample Bookmarking API"
+    contact:
+      email: "api@sample.de"
+    license:
+      name: "License of API"
+    version: "0.0.1"
+  servers:
+  - url: "/marki/api/v1"
+  tags:
+  - name: "Bookmark"
+    description: "Bookmarks"
+  - name: "Tag"
+    description: "Tags"
+  paths:
+    /bookmarks:
+      get:
+        summary: "List all current bookmarks"
+        tags:
+          - "Bookmark"
+        responses:
+          "200":
+            description: "An array of all available bookmarks"
+            content:
+              application/json:
+                schema:
+                  type: "array"
+                  items:
+                    $ref: "#/components/schemas/Bookmark"
+      post:
+        summary: "Add a new bookmark"
+        tags:
+          - "Bookmark"
+        requestBody:
+          description: "The Bookmark to add"
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bookmark"
+        responses:
+          "201":
+            description: "Returns new created Bookmark"
+            content:
+              application/json:
+                schema: 
+                  $ref: "#/components/schemas/Bookmark"
+    /bookmarks/{id}:
+      get:
+        summary: "Get details of a bookmark"
+        tags:
+          - "Bookmark"
+        parameters:
+          - name: "id"
+            in: "path"
+            required: true
+            description: "bookmark id"
+            schema:
+              type: "string"
+              format: "uuid"
+        responses:
+          "200":
+            description: "Requested Bookmark"
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Bookmark"
+      delete:
+        summary: "Delete a bookmark"
+        tags:
+          - "Bookmark"
+        parameters:
+          - name: "id"
+            in: "path"
+            required: true
+            description: "bookmark id"
+            schema:
+              type: "string"
+              format: "uuid"
+        responses:
+          "204":
+            description: "Bookmark deleted"
+    /bookmarks/{bookmarkId}/{tagId}:
+      delete:
+        summary: "Removes a given tag from a bookmark"
+        tags:
+          - "Bookmark"
+        parameters:
+          - name: "bookmarkId"
+            in: "path"
+            required: true
+            description: "Bookmark ID"
+            schema:
+              type: "string"
+              format: "uuid"
+          - name: "tagId"
+            in: "path"
+            required: true
+            description: "Tag ID"
+            schema:
+              type: "string"
+              format: "uuid"
+        responses:
+          "200":
+            description: "Tag was successfully removed"
+    /tags:
+      get:
+        summary: "List all current tags"
+        tags:
+          - "Tag"
+        responses:
+          "200":
+            description: "An array of all available Tags"
+            content:
+              application/json:
+                schema:
+                  type: "array"
+                  items:
+                    $ref: "#/components/schemas/Tag"
+      post:
+        summary: "Add a new Tag"
+        tags:
+          - "Tag"
+        requestBody:
+          description: "The Tag to add"
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        responses:
+          "201":
+            description: "Returns new created Tag"
+            content:
+              application/json:
+                schema: 
+                  $ref: "#/components/schemas/Tag"
+    /tags/{id}:
+      get:
+        summary: "Get details of a tag"
+        tags:
+          - "Tag"
+        parameters:
+          - name: "id"
+            in: "path"
+            required: true
+            description: "tag id"
+            schema:
+              type: "string"
+              format: "uuid"
+        responses:
+          "200":
+            description: "Requested Tag"
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Bookmark"
+      delete:
+        summary: "Delete a Tag"
+        tags:
+          - "Tag"
+        parameters:
+          - name: "id"
+            in: "path"
+            required: true
+            description: "tag id"
+            schema:
+              type: "string"
+              format: "uuid"
+        responses:
+          "204":
+            description: "Tag deleted"
+          "422":
+            description: "Tag is still in usage"
+  components:
+    schemas:
+      Bookmark:
+        type: "object"
+        required:
+          - "url"
+          - "name"
+        properties:
+          id:
+            format: "uuid"
+            type: "string"
+          url:
+            type: "string"
+          name:
+            type: "string"
+          tags:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/Tag"
+      Tag:
+        type: "object"
+        required:
+          - "name"
+        properties:
+          id:
+            format: "uuid"
+            type: "string"
+          name:
+            type: "string"
